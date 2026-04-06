@@ -4,6 +4,62 @@
 import random
 import streamlit as st
 
+st.markdown("""
+<style>
+/* General body text */
+body, .stMarkdown, .stText {
+    font-size: 16px !important;   /* larger base font for mobile */
+    line-height: 1.5 !important;
+    color: #222 !important;       /* darker text for contrast */
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: #333 !important;
+    font-weight: 600 !important;
+}
+h2, h3, h4 {
+    font-size: 18px !important;   /* shrink subheaders for mobile */
+}
+
+/* Player Status panel */
+.player-status {
+    background-color: rgba(0,0,0,0.7); /* dark semi-transparent background */
+    color: #fff !important;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+/* Buttons */
+button {
+    font-size: 18px !important;   /* bigger tap targets */
+    padding: 12px 24px !important;
+    border-radius: 8px !important;
+}
+
+/* Specific button colors by key */
+button[k="draw_button"] {
+    background-color: #007bff !important; /* blue */
+    color: white !important;
+}
+button[k="confirm_button"] {
+    background-color: #28a745 !important; /* green */
+    color: white !important;
+}
+button[k="skip_button"] {
+    background-color: #ffc107 !important; /* yellow */
+    color: black !important;
+}
+button[k="restart_button"] {
+    background-color: #dc3545 !important; /* red */
+    color: white !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # -----------------------------
 # Deck Setup
 # -----------------------------
