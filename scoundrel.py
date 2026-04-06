@@ -91,6 +91,24 @@ def card_display(card):
 # -----------------------------
 st.title("🃏 Scoundrel Dungeon Game")
 
+# -----------------------------
+# Sidebar: Game Rules
+# -----------------------------
+st.sidebar.title("📜 Game Rules")
+
+st.sidebar.markdown("""
+**Scoundrel Dungeon Rules**
+
+- Each round you draw 3 or 4 cards
+- Choose 3 cards, left 1 for next round
+- First Potion (♥️) heals, rest are discarded
+- Start with bare hand, Equip or Replace a weapon (♦️)
+- Monsters (♠️/♣️) deal damage, minus str of weapon
+- Weapon only deal damage to monster if monster is weaker than last one
+- You can dump all 4 cards to the bottom, but not twice in a row
+- Survive until the deck runs out to win!
+""")
+
 if "deck" not in st.session_state:
     st.session_state.deck = create_scoundrel_deck()
     st.session_state.health = 20
@@ -102,12 +120,57 @@ if "deck" not in st.session_state:
     st.session_state.round_potion_used = False
     st.session_state.chosen_cards = []
 
-# Initialize new flag
 if "last_round_skip" not in st.session_state:
     st.session_state.last_round_skip = False
 
+if "draw_used" not in st.session_state:
+    st.session_state.draw_used = False
 
-if st.button("Restart Game"):
+# -----------------------------
+# Player Status Panel (row layout like cards)
+# -----------------------------
+st.markdown("###### Player Status")
+
+status_items = [
+    ("❤️ Health", st.session_state.health),
+    ("⚔️ Weapon", st.session_state.weapon),
+    ("📦 Deck", len(st.session_state.deck)),
+    ("👹 Last Monster",
+     st.session_state.last_monster_value if st.session_state.get("last_monster_value") else "None")
+]
+
+cols = st.columns(len(status_items))
+
+for i, (label, value) in enumerate(status_items):
+    with cols[i]:
+        st.markdown(
+            f"<div style='background-color:#f0f0f0; padding:15px; text-align:center; "
+            f"font-size:18px; border-radius:8px;'>"
+            f"<b>{label}</b><br>{value}</div>",
+            unsafe_allow_html=True
+        )
+
+# -----------------------------
+# Action Buttons Row
+# -----------------------------
+st.markdown("###### Actions")
+
+cols = st.columns(4)
+
+with cols[0]:
+    draw_pressed = st.button("🎴 **Draw**", key="draw_button",
+                             disabled=st.session_state.draw_used)
+
+with cols[1]:
+    confirm_pressed = st.button("✅ **Confirm**", key="confirm_button")
+
+with cols[2]:
+    skip_pressed = st.button("⏭️ **Skip**", key="skip_button")
+
+with cols[3]:
+    restart_pressed = st.button("🔄 **Restart**", key="restart_button")
+
+if restart_pressed:
     st.session_state.deck = create_scoundrel_deck()
     st.session_state.health = 20
     st.session_state.weapon = 0
@@ -117,11 +180,9 @@ if st.button("Restart Game"):
     st.session_state.round = 1
     st.session_state.round_potion_used = False
     st.session_state.chosen_cards = []
+    st.session_state.draw_used = False
+    st.session_state.last_round_skip = False
 
-if st.session_state.leftover and not st.session_state.current_draw:
-    st.info(f"Carried over from last round: {st.session_state.leftover}")
-
-draw_pressed = st.button("Draw Cards")
 
 if draw_pressed:
     if st.session_state.health > 0 and st.session_state.deck:
@@ -132,7 +193,6 @@ if draw_pressed:
             st.session_state.current_draw = []
             st.success(f"🏆 You survived the dungeon! Final Health: {st.session_state.health}")
         else:
-            # Draw from the front of the deck
             draw = [st.session_state.deck.pop(0) for _ in range(draw_count)]
             if st.session_state.round > 1 and st.session_state.leftover:
                 draw.insert(0, st.session_state.leftover)
@@ -140,12 +200,16 @@ if draw_pressed:
             st.session_state.current_draw = draw
             st.session_state.chosen_cards = []
             st.session_state.round_potion_used = False
+
+        # Mark draw as used
+        st.session_state.draw_used = True
+        st.rerun()
     else:
         st.session_state.log.append("No more cards or you are dead!")
 
 
 if st.session_state.current_draw:
-    st.subheader(f"Round {st.session_state.round} - Your Drawn Cards")
+    st.markdown(f"###### Round {st.session_state.round} - Your Drawn Cards")
     cols = st.columns(len(st.session_state.current_draw))
 
     for i, card in enumerate(st.session_state.current_draw):
@@ -164,7 +228,7 @@ if st.session_state.current_draw:
 
 
     # Normal confirm
-    if len(st.session_state.chosen_cards) == 3 and st.button("Confirm Choices"):
+    if confirm_pressed and len(st.session_state.chosen_cards) == 3:
         for card in st.session_state.chosen_cards:
             result = apply_card(card, st.session_state)
             st.session_state.log.append(result)
@@ -174,9 +238,11 @@ if st.session_state.current_draw:
         st.session_state.round += 1
         st.session_state.chosen_cards = []
         st.session_state.last_round_skip = False  # reset skip flag when playing normally
+        st.session_state.draw_used = False
+        st.rerun()
 
     # New skip option
-    if st.button("Put All Cards to Bottom"):
+    if skip_pressed:
         if st.session_state.last_round_skip:
             st.warning("You cannot skip two rounds in a row!")
         else:
@@ -188,23 +254,11 @@ if st.session_state.current_draw:
             st.session_state.leftover = None
             st.session_state.round += 1
             st.session_state.last_round_skip = True
+            st.session_state.draw_used = False
+            st.rerun()
             st.info("All cards placed at the bottom of the deck.")
 
-# -----------------------------
-# Player Status Panel
-# -----------------------------
-st.subheader("Player Status")
-st.write(f"Health: {st.session_state.health}")
-st.write(f"Weapon Strength: {st.session_state.weapon}")
-st.write(f"Remaining Cards in Deck: {len(st.session_state.deck)}")
-
-# Show remembered monster value
-if "last_monster_value" in st.session_state and st.session_state.last_monster_value is not None:
-    st.write(f"Last Monster Blocked: {st.session_state.last_monster_value}")
-else:
-    st.write("Last Monster Blocked: None")
-
-st.subheader("Adventure Log")
+st.markdown("###### Adventure Log")
 for entry in st.session_state.log[::-1]:
     st.write(entry)
 
