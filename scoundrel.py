@@ -186,6 +186,20 @@ for i, (label, value) in enumerate(status_items):
 # -----------------------------
 st.markdown("###### Actions")
 
+st.markdown("""
+<style>
+/* Force two items per row on small screens */
+div[data-testid="stHorizontalBlock"] {
+    flex-wrap: wrap;
+}
+div[data-testid="stHorizontalBlock"] > div {
+    flex: 1 1 45%;   /* roughly half width */
+    min-width: 120px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 # First row: Draw + Confirm
 row1 = st.columns(2)
 with row1[0]:
