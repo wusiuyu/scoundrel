@@ -186,20 +186,45 @@ for i, (label, value) in enumerate(status_items):
 # -----------------------------
 st.markdown("###### Actions")
 
-cols = st.columns(4)
+# Inject CSS for responsive grid
+st.markdown(
+    """
+    <style>
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* 4 columns desktop */
+        gap: 10px;
+    }
+    @media (max-width: 768px) {
+        .action-grid {
+            grid-template-columns: repeat(2, 1fr); /* 2 columns mobile */
+        }
+    }
+    .action-grid > div {
+        width: 100%;
+    }
+    .action-grid button {
+        width: 100% !important;
+        height: 50px;
+        font-size: 16px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-with cols[0]:
-    draw_pressed = st.button("🎴 **Draw**", key="draw_button",
-                             disabled=st.session_state.draw_used)
-
-with cols[1]:
-    confirm_pressed = st.button("✅ **Confirm**", key="confirm_button")
-
-with cols[2]:
-    skip_pressed = st.button("⏭️ **Skip**", key="skip_button")
-
-with cols[3]:
-    restart_pressed = st.button("🔄 **Restart**", key="restart_button")
+# Place each button inside its own container div
+st.markdown("<div class='action-grid'>", unsafe_allow_html=True)
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    draw_pressed = st.button("🎴 Draw", key="draw_button", disabled=st.session_state.draw_used)
+with col2:
+    confirm_pressed = st.button("✅ Confirm", key="confirm_button")
+with col3:
+    skip_pressed = st.button("⏭️ Skip", key="skip_button")
+with col4:
+    restart_pressed = st.button("🔄 Restart", key="restart_button")
+st.markdown("</div>", unsafe_allow_html=True)
 
 if restart_pressed:
     st.session_state.deck = create_scoundrel_deck()
