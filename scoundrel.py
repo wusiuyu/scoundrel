@@ -157,27 +157,35 @@ if "draw_used" not in st.session_state:
 # -----------------------------
 st.markdown("###### Player Status")
 
-# Inject CSS for left‑aligned inline label + value with border
+# Global CSS tweaks for mobile responsiveness
 st.markdown(
     """
     <style>
+    /* Reduce font size and padding for status boxes */
     .status-box {
         width: 100%;
-        text-align: left;          /* left align text */
-        padding: 12px;
-        font-size: 18px;
-        border-radius: 8px;
+        text-align: left;
+        padding: 8px;              /* smaller padding */
+        font-size: 14px;           /* smaller font size */
+        border-radius: 6px;
         background-color: var(--secondary-background-color);
         color: var(--text-color);
-        height: 60px;              /* uniform height */
+        height: 50px;              /* smaller height */
         display: flex;
-        align-items: center;       /* vertical centering */
-        justify-content: flex-start; /* force left alignment */
-        gap: 8px;                  /* spacing between label and value */
-        border: 2px solid rgba(0,0,0,0.2); /* add subtle border */
+        align-items: center;
+        justify-content: flex-start;
+        gap: 6px;
+        border: 1px solid rgba(0,0,0,0.2);
     }
     .status-label {
         font-weight: bold;
+    }
+
+    /* Reduce font size and stretch buttons */
+    div[data-testid="stButton"] > button {
+        width: 100% !important;
+        font-size: 14px !important;  /* smaller text */
+        padding: 6px 0 !important;   /* reduce vertical padding */
     }
     </style>
     """,
@@ -212,19 +220,6 @@ for i in range(0, len(status_items), 2):
 # -----------------------------
 
 st.markdown("###### Actions")
-
-# Inject CSS to stretch buttons full width
-st.markdown(
-    """
-    <style>
-    div[data-testid="stButton"] > button {
-        width: 100% !important;   /* stretch button to fill column */
-        text-align: center;       /* center text inside button */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 # First row
 cols1 = st.columns(2)
