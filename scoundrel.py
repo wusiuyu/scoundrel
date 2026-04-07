@@ -79,16 +79,12 @@ def apply_card(card, state):
 # -----------------------------
 def card_display(card):
     suit = card[-1]
-    # Use Streamlit theme variables for adaptive background
-    if suit == "H":  # Potion
-        bg_color = "var(--secondary-background-color)"
-        return f"<div style='background-color:{bg_color}; padding:20px; text-align:center; font-size:24px; border-radius:10px;'>❤️ {card}</div>"
-    elif suit == "D":  # Weapon
-        bg_color = "var(--secondary-background-color)"
-        return f"<div style='background-color:{bg_color}; padding:20px; text-align:center; font-size:24px; border-radius:10px;'>⚔️ {card}</div>"
-    else:  # Monster
-        bg_color = "var(--secondary-background-color)"
-        return f"<div style='background-color:{bg_color}; padding:20px; text-align:center; font-size:24px; border-radius:10px;'>👹 {card}</div>"
+    if suit == "H":
+        return f"<div style='background-color:#ffcccc; padding:20px; text-align:center; font-size:24px; border-radius:10px;'>❤️ {card}</div>"
+    elif suit == "D":
+        return f"<div style='background-color:#fff3cd; padding:20px; text-align:center; font-size:24px; border-radius:10px;'>⚔️ {card}</div>"
+    else:
+        return f"<div style='background-color:#cce5ff; padding:20px; text-align:center; font-size:24px; border-radius:10px;'>👹 {card}</div>"
 
 # -----------------------------
 # Streamlit UI
