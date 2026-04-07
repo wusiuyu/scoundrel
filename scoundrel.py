@@ -2,27 +2,38 @@
 
 import streamlit as st
 
+# Inject CSS for a responsive grid
 st.markdown("""
 <style>
-.button-row {
+.button-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* force 2 per row */
     gap: 10px;
 }
-.button-row button {
+.button-grid > div {
     width: 100%;
-    height: 50px;
-    font-size: 16px;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# Wrap buttons in a grid container
-st.markdown('<div class="button-row">', unsafe_allow_html=True)
+# Wrap each st.button in a div inside the grid
+st.markdown('<div class="button-grid">', unsafe_allow_html=True)
 
-draw_pressed = st.button("🎴 Draw", key="draw_button")
-confirm_pressed = st.button("✅ Confirm", key="confirm_button")
-skip_pressed = st.button("⏭️ Skip", key="skip_button")
-restart_pressed = st.button("🔄 Restart", key="restart_button")
+with st.container():
+    st.markdown('<div>', unsafe_allow_html=True)
+    draw_pressed = st.button("🎴 Draw", key="draw_button", disabled=st.session_state.draw_used)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown('<div>', unsafe_allow_html=True)
+    confirm_pressed = st.button("✅ Confirm", key="confirm_button")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown('<div>', unsafe_allow_html=True)
+    skip_pressed = st.button("⏭️ Skip", key="skip_button")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown('<div>', unsafe_allow_html=True)
+    restart_pressed = st.button("🔄 Restart", key="restart_button")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
