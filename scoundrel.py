@@ -4,62 +4,6 @@
 import random
 import streamlit as st
 
-st.markdown("""
-<style>
-/* General body text */
-body, .stMarkdown, .stText {
-    font-size: 16px !important;   /* larger base font for mobile */
-    line-height: 1.5 !important;
-    color: #222 !important;       /* darker text for contrast */
-}
-
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-    color: #333 !important;
-    font-weight: 600 !important;
-}
-h2, h3, h4 {
-    font-size: 18px !important;   /* shrink subheaders for mobile */
-}
-
-/* Player Status panel */
-.player-status {
-    background-color: rgba(0,0,0,0.7); /* dark semi-transparent background */
-    color: #fff !important;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-    margin-bottom: 10px;
-    font-size: 15px;
-}
-
-/* Buttons */
-button {
-    font-size: 18px !important;   /* bigger tap targets */
-    padding: 12px 24px !important;
-    border-radius: 8px !important;
-}
-
-/* Specific button colors by key */
-button[k="draw_button"] {
-    background-color: #007bff !important; /* blue */
-    color: white !important;
-}
-button[k="confirm_button"] {
-    background-color: #28a745 !important; /* green */
-    color: white !important;
-}
-button[k="skip_button"] {
-    background-color: #ffc107 !important; /* yellow */
-    color: black !important;
-}
-button[k="restart_button"] {
-    background-color: #dc3545 !important; /* red */
-    color: white !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
 # -----------------------------
 # Deck Setup
 # -----------------------------
@@ -147,21 +91,47 @@ def card_display(card):
 # -----------------------------
 st.title("🃏 Scoundrel Dungeon Game")
 
-# -----------------------------
 # Sidebar: Game Rules
-# -----------------------------
 st.sidebar.title("📜 Game Rules")
+
+# Inject CSS that adapts to both light and dark mode
+st.sidebar.markdown(
+    """
+    <style>
+    [data-testid="stSidebar"] {
+        color: inherit; /* use theme default */
+    }
+    [data-testid="stSidebar"] h1, 
+    [data-testid="stSidebar"] h2, 
+    [data-testid="stSidebar"] h3, 
+    [data-testid="stSidebar"] h4, 
+    [data-testid="stSidebar"] h5, 
+    [data-testid="stSidebar"] h6 {
+        color: inherit; /* headings follow theme */
+    }
+    [data-testid="stSidebar"] p {
+        color: rgba(255,255,255,0.85); /* light text in dark mode */
+    }
+    @media (prefers-color-scheme: light) {
+        [data-testid="stSidebar"] p {
+            color: rgba(0,0,0,0.85); /* dark text in light mode */
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 st.sidebar.markdown("""
 **Scoundrel Dungeon Rules**
 
-- Each round you draw 3 or 4 cards
-- Choose 3 cards, left 1 for next round
-- First Potion (♥️) heals, rest are discarded
-- Start with bare hand, Equip or Replace a weapon (♦️)
-- Monsters (♠️/♣️) deal damage, minus str of weapon
-- Weapon only deal damage to monster if monster is weaker than last one
-- You can dump all 4 cards to the bottom, but not twice in a row
+- Each round you draw 3 or 4 cards  
+- Choose 3 cards, leave 1 for next round  
+- First Potion (♥️) heals, rest are discarded  
+- Start with bare hand, Equip or Replace a weapon (♦️)  
+- Monsters (♠️/♣️) deal damage, minus str of weapon  
+- Weapon only deals damage if monster is weaker than last one  
+- You can dump all 4 cards to the bottom, but not twice in a row  
 - Survive until the deck runs out to win!
 """)
 
@@ -264,24 +234,31 @@ if draw_pressed:
         st.session_state.log.append("No more cards or you are dead!")
 
 
+# Define emoji mapping once
+emoji_map = {
+    "H": "❤️",  # Potion
+    "D": "⚔️",  # Weapon
+    "S": "👹",  # Monster (Spades)
+    "C": "👹"   # Monster (Clubs)
+}
+
 if st.session_state.current_draw:
     st.markdown(f"###### Round {st.session_state.round} - Your Drawn Cards")
     cols = st.columns(len(st.session_state.current_draw))
-
     for i, card in enumerate(st.session_state.current_draw):
         with cols[i]:
-            st.markdown(card_display(card), unsafe_allow_html=True)
-
-            label = "Deselect" if card in st.session_state.chosen_cards else "Select"
-            if st.button(label, key=f"toggle_{st.session_state.round}_{i}"):
-                if card in st.session_state.chosen_cards:
+            selected = card in st.session_state.chosen_cards
+            suit = card[-1]
+            emoji = emoji_map.get(suit, "")
+            label = f"{emoji} {card}" + (" ✅" if selected else "")
+            if st.button(label, key=f"card_{st.session_state.round}_{i}"):
+                if selected:
                     st.session_state.chosen_cards.remove(card)
                 else:
                     if len(st.session_state.chosen_cards) < 3:
                         st.session_state.chosen_cards.append(card)
-
-    st.write(f"Chosen cards: {', '.join(st.session_state.chosen_cards)}")
-
+    chosen_display = [f"{emoji_map.get(c[-1], '')} {c}" for c in st.session_state.chosen_cards]
+    st.write("Chosen cards: " + ", ".join(chosen_display))
 
     # Normal confirm
     if confirm_pressed and len(st.session_state.chosen_cards) == 3:
