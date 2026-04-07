@@ -152,25 +152,27 @@ if "last_round_skip" not in st.session_state:
 if "draw_used" not in st.session_state:
     st.session_state.draw_used = False
 
-# -----------------------------
-# Player Status Panel (adaptive layout)
-# -----------------------------
-st.markdown("###### Player Status")
-
-# Global CSS tweaks for mobile responsiveness
+# --- CSS tweaks for compact sizing ---
 st.markdown(
     """
     <style>
-    /* Reduce font size and padding for status boxes */
+    /* Compact buttons */
+    div[data-testid="stButton"] > button {
+        width: 100% !important;
+        font-size: 14px !important;   /* smaller text */
+        padding: 6px !important;      /* reduce padding */
+    }
+
+    /* Compact status boxes */
     .status-box {
         width: 100%;
         text-align: left;
-        padding: 8px;              /* smaller padding */
-        font-size: 14px;           /* smaller font size */
+        padding: 8px;
+        font-size: 14px;
         border-radius: 6px;
         background-color: var(--secondary-background-color);
         color: var(--text-color);
-        height: 50px;              /* smaller height */
+        height: 50px;
         display: flex;
         align-items: center;
         justify-content: flex-start;
@@ -180,27 +182,20 @@ st.markdown(
     .status-label {
         font-weight: bold;
     }
-
-    /* Reduce font size and stretch buttons */
-    div[data-testid="stButton"] > button {
-        width: 100% !important;
-        font-size: 14px !important;  /* smaller text */
-        padding: 6px 0 !important;   /* reduce vertical padding */
-    }
     </style>
     """,
     unsafe_allow_html=True
 )
 
+# --- Player Status section ---
+st.markdown("###### Player Status")
 status_items = [
     ("❤️ Health", st.session_state.health),
     ("⚔️ Weapon", st.session_state.weapon),
     ("📦 Deck", len(st.session_state.deck)),
-    ("👹 Last Monster",
-     st.session_state.last_monster_value if st.session_state.get("last_monster_value") else "None")
+    ("👹 Last Monster", st.session_state.last_monster_value if st.session_state.get("last_monster_value") else "None")
 ]
 
-# Force 2 columns per row
 for i in range(0, len(status_items), 2):
     cols = st.columns(2)
     for j, (label, value) in enumerate(status_items[i:i+2]):
@@ -215,26 +210,20 @@ for i in range(0, len(status_items), 2):
                 unsafe_allow_html=True
             )
 
-# -----------------------------
-# Action Buttons Row
-# -----------------------------
-
+# --- Actions section ---
 st.markdown("###### Actions")
-
-# First row
 cols1 = st.columns(2)
 with cols1[0]:
-    draw_pressed = st.button("🎴 **Draw**", key="draw_button",
-                             disabled=st.session_state.draw_used)
+    draw_pressed = st.button("🎴 Draw", key="draw_button", disabled=st.session_state.draw_used)
 with cols1[1]:
-    confirm_pressed = st.button("✅ **Confirm**", key="confirm_button")
+    confirm_pressed = st.button("✅ Confirm", key="confirm_button")
 
-# Second row
 cols2 = st.columns(2)
 with cols2[0]:
-    skip_pressed = st.button("⏭️ **Skip**", key="skip_button")
+    skip_pressed = st.button("⏭️ Skip", key="skip_button")
 with cols2[1]:
-    restart_pressed = st.button("🔄 **Restart**", key="restart_button")
+    restart_pressed = st.button("🔄 Restart", key="restart_button")
+
 
 if restart_pressed:
     st.session_state.deck = create_scoundrel_deck()
