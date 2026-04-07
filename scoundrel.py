@@ -20,7 +20,7 @@ st.markdown("""
 # Wrap buttons in a grid container
 st.markdown('<div class="button-row">', unsafe_allow_html=True)
 
-draw_pressed = st.button("🎴 Draw", key="draw_button", disabled=st.session_state.draw_used)
+draw_pressed = st.button("🎴 Draw", key="draw_button")
 confirm_pressed = st.button("✅ Confirm", key="confirm_button")
 skip_pressed = st.button("⏭️ Skip", key="skip_button")
 restart_pressed = st.button("🔄 Restart", key="restart_button")
