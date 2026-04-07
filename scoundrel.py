@@ -153,7 +153,7 @@ if "draw_used" not in st.session_state:
     st.session_state.draw_used = False
 
 # -----------------------------
-# Player Status Panel (row layout like cards)
+# Player Status Panel (adaptive layout)
 # -----------------------------
 st.markdown("###### Player Status")
 
@@ -170,9 +170,14 @@ cols = st.columns(len(status_items))
 for i, (label, value) in enumerate(status_items):
     with cols[i]:
         st.markdown(
-            f"<div style='background-color:#f0f0f0; padding:15px; text-align:center; "
-            f"font-size:18px; border-radius:8px;'>"
-            f"<b>{label}</b><br>{value}</div>",
+            f"""
+            <div style='background-color:var(--secondary-background-color);
+                        color:var(--text-color);
+                        padding:15px; text-align:center;
+                        font-size:18px; border-radius:8px;'>
+                <b>{label}</b><br>{value}
+            </div>
+            """,
             unsafe_allow_html=True
         )
 
