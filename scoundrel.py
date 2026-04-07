@@ -160,10 +160,10 @@ st.markdown("###### Player Status")
 last_monster_value = st.session_state.last_monster_value if st.session_state.get("last_monster_value") else 0
 
 status_str = (
-    f"❤️ : {st.session_state.health} | "
-    f"⚔️ : {st.session_state.weapon} | "
-    f"📦 : {len(st.session_state.deck)} | "
-    f"👹 : {last_monster_value}"
+    f"❤️{st.session_state.health} "
+    f"⚔️{st.session_state.weapon} "
+    f"📦{len(st.session_state.deck)} "
+    f"👹{last_monster_value}"
 )
 
 st.markdown(
