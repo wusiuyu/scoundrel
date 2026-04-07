@@ -89,7 +89,7 @@ def card_display(card):
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.markdown("###### 🃏Scoundrel Dungeon Game")
+st.title("🃏 Scoundrel Dungeon Game")
 
 # Sidebar: Game Rules
 st.sidebar.title("📜 Game Rules")
@@ -152,78 +152,54 @@ if "last_round_skip" not in st.session_state:
 if "draw_used" not in st.session_state:
     st.session_state.draw_used = False
 
-# --- CSS tweaks for compact sizing ---
-st.markdown(
-    """
-    <style>
-    /* Compact buttons */
-    div[data-testid="stButton"] > button {
-        width: 100% !important;
-        font-size: 14px !important;   /* smaller text */
-        padding: 6px !important;      /* reduce padding */
-    }
-
-    /* Compact status boxes */
-    .status-box {
-        width: 100%;
-        text-align: left;
-        padding: 8px;
-        font-size: 14px;
-        border-radius: 6px;
-        background-color: var(--secondary-background-color);
-        color: var(--text-color);
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 6px;
-        border: 1px solid rgba(0,0,0,0.2);
-    }
-    .status-label {
-        font-weight: bold;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# --- Player Status section ---
+# -----------------------------
+# Player Status Panel (adaptive layout)
+# -----------------------------
 st.markdown("###### Player Status")
+
 status_items = [
     ("❤️ Health", st.session_state.health),
     ("⚔️ Weapon", st.session_state.weapon),
     ("📦 Deck", len(st.session_state.deck)),
-    ("👹 Last Monster", st.session_state.last_monster_value if st.session_state.get("last_monster_value") else "None")
+    ("👹 Last Monster",
+     st.session_state.last_monster_value if st.session_state.get("last_monster_value") else "None")
 ]
 
-for i in range(0, len(status_items), 2):
-    cols = st.columns(2)
-    for j, (label, value) in enumerate(status_items[i:i+2]):
-        with cols[j]:
-            st.markdown(
-                f"""
-                <div class="status-box">
-                    <span class="status-label">{label}</span>
-                    <span>{value}</span>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+cols = st.columns(len(status_items))
 
-# --- Actions section ---
+for i, (label, value) in enumerate(status_items):
+    with cols[i]:
+        st.markdown(
+            f"""
+            <div style='background-color:var(--secondary-background-color);
+                        color:var(--text-color);
+                        padding:15px; text-align:center;
+                        font-size:18px; border-radius:8px;'>
+                <b>{label}</b><br>{value}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+# -----------------------------
+# Action Buttons Row
+# -----------------------------
 st.markdown("###### Actions")
-cols1 = st.columns(2)
-with cols1[0]:
-    draw_pressed = st.button("🎴 Draw", key="draw_button", disabled=st.session_state.draw_used)
-with cols1[1]:
-    confirm_pressed = st.button("✅ Confirm", key="confirm_button")
 
-cols2 = st.columns(2)
-with cols2[0]:
-    skip_pressed = st.button("⏭️ Skip", key="skip_button")
-with cols2[1]:
-    restart_pressed = st.button("🔄 Restart", key="restart_button")
+# First row: Draw + Confirm
+row1 = st.columns(2)
+with row1[0]:
+    draw_pressed = st.button("🎴 **Draw**", key="draw_button",
+                             disabled=st.session_state.draw_used)
+with row1[1]:
+    confirm_pressed = st.button("✅ **Confirm**", key="confirm_button")
 
+# Second row: Skip + Restart
+row2 = st.columns(2)
+with row2[0]:
+    skip_pressed = st.button("⏭️ **Skip**", key="skip_button")
+with row2[1]:
+    restart_pressed = st.button("🔄 **Restart**", key="restart_button")
 
 if restart_pressed:
     st.session_state.deck = create_scoundrel_deck()
