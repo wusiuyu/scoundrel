@@ -159,8 +159,8 @@ st.markdown("###### Player Status")
 
 # Group status items into pairs
 status_pairs = [
-    ("❤️ Health", st.session_state.health, "⚔️ Weapon", st.session_state.weapon),
-    ("📦 Deck", len(st.session_state.deck), "👹 Last Monster",
+    ("❤️ ", st.session_state.health, "⚔️ ", st.session_state.weapon),
+    ("📦 ", len(st.session_state.deck), "👹 ",
      st.session_state.last_monster_value if st.session_state.get("last_monster_value") else "None")
 ]
 
