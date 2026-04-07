@@ -159,8 +159,8 @@ st.markdown("###### Player Status")
 
 # Group status items into pairs
 status_pairs = [
-    ("❤️ ", st.session_state.health, "⚔️ ", st.session_state.weapon),
-    ("📦 ", len(st.session_state.deck), "👹 ",
+    ("❤️ Health", st.session_state.health, "⚔️ Weapon", st.session_state.weapon),
+    ("📦 Deck", len(st.session_state.deck), "👹 Last Monster",
      st.session_state.last_monster_value if st.session_state.get("last_monster_value") else "None")
 ]
 
@@ -172,19 +172,18 @@ for i, (label1, value1, label2, value2) in enumerate(status_pairs):
             f"""
             <div style='background-color:var(--secondary-background-color);
                         color:var(--text-color);
-                        padding:15px; text-align:center;
+                        padding:10px; text-align:center;
                         font-size:18px; border-radius:8px;'>
-                <table style='width:100%; text-align:center;'>
+                <table style='width:100%; border-collapse:collapse;'>
                     <tr>
-                        <td><b>{label1}</b> {value1}</td>
-                        <td><b>{label2}</b> {value2}</td>
+                        <td style='text-align:center;'><b>{label1}</b> {value1}</td>
+                        <td style='text-align:center;'><b>{label2}</b> {value2}</td>
                     </tr>
                 </table>
             </div>
             """,
             unsafe_allow_html=True
         )
-
 
 # -----------------------------
 # Action Buttons Row
