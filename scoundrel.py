@@ -89,7 +89,7 @@ def card_display(card):
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.title("🃏 Scoundrel Dungeon Game")
+st.markdown("###### 🃏Scoundrel Dungeon Game")
 
 # Sidebar: Game Rules
 st.sidebar.title("📜 Game Rules")
@@ -157,6 +157,33 @@ if "draw_used" not in st.session_state:
 # -----------------------------
 st.markdown("###### Player Status")
 
+# Inject CSS for left‑aligned inline label + value with border
+st.markdown(
+    """
+    <style>
+    .status-box {
+        width: 100%;
+        text-align: left;          /* left align text */
+        padding: 12px;
+        font-size: 18px;
+        border-radius: 8px;
+        background-color: var(--secondary-background-color);
+        color: var(--text-color);
+        height: 60px;              /* uniform height */
+        display: flex;
+        align-items: center;       /* vertical centering */
+        justify-content: flex-start; /* force left alignment */
+        gap: 8px;                  /* spacing between label and value */
+        border: 2px solid rgba(0,0,0,0.2); /* add subtle border */
+    }
+    .status-label {
+        font-weight: bold;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 status_items = [
     ("❤️ Health", st.session_state.health),
     ("⚔️ Weapon", st.session_state.weapon),
@@ -165,66 +192,54 @@ status_items = [
      st.session_state.last_monster_value if st.session_state.get("last_monster_value") else "None")
 ]
 
-cols = st.columns(len(status_items))
-
-for i, (label, value) in enumerate(status_items):
-    with cols[i]:
-        st.markdown(
-            f"""
-            <div style='background-color:var(--secondary-background-color);
-                        color:var(--text-color);
-                        padding:15px; text-align:center;
-                        font-size:18px; border-radius:8px;'>
-                <b>{label}</b><br>{value}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+# Force 2 columns per row
+for i in range(0, len(status_items), 2):
+    cols = st.columns(2)
+    for j, (label, value) in enumerate(status_items[i:i+2]):
+        with cols[j]:
+            st.markdown(
+                f"""
+                <div class="status-box">
+                    <span class="status-label">{label}</span>
+                    <span>{value}</span>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
 # -----------------------------
 # Action Buttons Row
 # -----------------------------
+
 st.markdown("###### Actions")
 
-# Inject CSS for responsive grid
+# Inject CSS to stretch buttons full width
 st.markdown(
     """
     <style>
-    .action-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr); /* 4 columns desktop */
-        gap: 10px;
-    }
-    @media (max-width: 768px) {
-        .action-grid {
-            grid-template-columns: repeat(2, 1fr); /* 2 columns mobile */
-        }
-    }
-    .action-grid > div {
-        width: 100%;
-    }
-    .action-grid button {
-        width: 100% !important;
-        height: 50px;
-        font-size: 16px;
+    div[data-testid="stButton"] > button {
+        width: 100% !important;   /* stretch button to fill column */
+        text-align: center;       /* center text inside button */
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# Place each button inside its own container div
-st.markdown("<div class='action-grid'>", unsafe_allow_html=True)
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    draw_pressed = st.button("🎴 Draw", key="draw_button", disabled=st.session_state.draw_used)
-with col2:
-    confirm_pressed = st.button("✅ Confirm", key="confirm_button")
-with col3:
-    skip_pressed = st.button("⏭️ Skip", key="skip_button")
-with col4:
-    restart_pressed = st.button("🔄 Restart", key="restart_button")
-st.markdown("</div>", unsafe_allow_html=True)
+# First row
+cols1 = st.columns(2)
+with cols1[0]:
+    draw_pressed = st.button("🎴 **Draw**", key="draw_button",
+                             disabled=st.session_state.draw_used)
+with cols1[1]:
+    confirm_pressed = st.button("✅ **Confirm**", key="confirm_button")
+
+# Second row
+cols2 = st.columns(2)
+with cols2[0]:
+    skip_pressed = st.button("⏭️ **Skip**", key="skip_button")
+with cols2[1]:
+    restart_pressed = st.button("🔄 **Restart**", key="restart_button")
 
 if restart_pressed:
     st.session_state.deck = create_scoundrel_deck()
