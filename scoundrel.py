@@ -157,33 +157,26 @@ if "draw_used" not in st.session_state:
 # -----------------------------
 st.markdown("###### Player Status")
 
-# Group status items into pairs
-status_pairs = [
-    ("❤️ ", st.session_state.health, "⚔️ ", st.session_state.weapon),
-    ("📦 ", len(st.session_state.deck), "👹 ",
-     st.session_state.last_monster_value if st.session_state.get("last_monster_value") else "None")
-]
+last_monster_value = st.session_state.last_monster_value if st.session_state.get("last_monster_value") else 0
 
-cols = st.columns(len(status_pairs))
+status_str = (
+    f"❤️ : {st.session_state.health} | "
+    f"⚔️ : {st.session_state.weapon} | "
+    f"📦 : {len(st.session_state.deck)} | "
+    f"👹 : {last_monster_value}"
+)
 
-for i, (label1, value1, label2, value2) in enumerate(status_pairs):
-    with cols[i]:
-        st.markdown(
-            f"""
-            <div style='background-color:var(--secondary-background-color);
-                        color:var(--text-color);
-                        padding:10px; text-align:center;
-                        font-size:18px; border-radius:8px;'>
-                <table style='width:100%; border-collapse:collapse;'>
-                    <tr>
-                        <td style='text-align:center;'><b>{label1}</b> {value1}</td>
-                        <td style='text-align:center;'><b>{label2}</b> {value2}</td>
-                    </tr>
-                </table>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+st.markdown(
+    f"""
+    <div style='background-color:var(--secondary-background-color);
+                color:var(--text-color);
+                padding:15px; text-align:center;
+                font-size:18px; border-radius:8px;'>
+        {status_str}
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # -----------------------------
 # Action Buttons Row
