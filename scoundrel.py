@@ -89,7 +89,7 @@ def card_display(card):
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.title("🃏 Scoundrel Dungeon Game")
+st.markdown("###### 🃏 Scoundrel Dungeon Game")
 
 # Sidebar: Game Rules
 st.sidebar.title("📜 Game Rules")
