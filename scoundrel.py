@@ -157,17 +157,16 @@ if "draw_used" not in st.session_state:
 # -----------------------------
 st.markdown("###### Player Status")
 
-status_items = [
-    ("❤️ Health", st.session_state.health),
-    ("⚔️ Weapon", st.session_state.weapon),
-    ("📦 Deck", len(st.session_state.deck)),
-    ("👹 Last Monster",
+# Group status items into pairs
+status_pairs = [
+    ("❤️ Health", st.session_state.health, "⚔️ Weapon", st.session_state.weapon),
+    ("📦 Deck", len(st.session_state.deck), "👹 Last Monster",
      st.session_state.last_monster_value if st.session_state.get("last_monster_value") else "None")
 ]
 
-cols = st.columns(len(status_items))
+cols = st.columns(len(status_pairs))
 
-for i, (label, value) in enumerate(status_items):
+for i, (label1, value1, label2, value2) in enumerate(status_pairs):
     with cols[i]:
         st.markdown(
             f"""
@@ -175,11 +174,17 @@ for i, (label, value) in enumerate(status_items):
                         color:var(--text-color);
                         padding:15px; text-align:center;
                         font-size:18px; border-radius:8px;'>
-                <b>{label}</b><br>{value}
+                <table style='width:100%; text-align:center;'>
+                    <tr>
+                        <td><b>{label1}</b> {value1}</td>
+                        <td><b>{label2}</b> {value2}</td>
+                    </tr>
+                </table>
             </div>
             """,
             unsafe_allow_html=True
         )
+
 
 # -----------------------------
 # Action Buttons Row
