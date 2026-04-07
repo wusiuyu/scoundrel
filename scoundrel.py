@@ -21,7 +21,7 @@ st.markdown('<div class="button-grid">', unsafe_allow_html=True)
 
 with st.container():
     st.markdown('<div>', unsafe_allow_html=True)
-    draw_pressed = st.button("🎴 Draw", key="draw_button", disabled=st.session_state.draw_used)
+    draw_pressed = st.button("🎴 Draw", key="draw_button")
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div>', unsafe_allow_html=True)
